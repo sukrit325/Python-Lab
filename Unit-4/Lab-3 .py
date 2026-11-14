@@ -1,67 +1,54 @@
 import csv
 import os
 
-PAYROLL_FILE = "payroll.csv"
+filename = "payroll.csv"
 
+def add_employee():
+    emp_id = input("Enter Employee ID: ")
+    name = input("Enter Employee Name: ")
+    basic = float(input("Enter Basic Salary: "))
+    allowance = float(input("Enter Allowance: "))
+    deduction = float(input("Enter Deduction: "))
 
-def initialize_payroll():
-  """Initializes the payroll CSV file if it doesn't exist."""
-  if not os.path.exists(PAYROLL_FILE):
-    with open(PAYROLL_FILE, mode="w", newline="") as f:
-      writer = csv.writer(f)
-      writer.writerow(
-          ["EmpID", "Name", "BasicSalary", "Allowances", "Deductions", "NetSalary"]
-      )
+    net = basic + allowance - deduction
 
+    with open(filename, "a", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow([emp_id, name, basic, allowance, deduction, net])
 
-def add_employee(emp_id, name, basic, allowances, deductions):
-  """Calculates net salary and records the employee data."""
-  net_salary = float(basic) + float(allowances) - float(deductions)
-  with open(PAYROLL_FILE, mode="a", newline="") as f:
-    writer = csv.writer(f)
-    writer.writerow([emp_id, name, basic, allowances, deductions, net_salary])
-  print(f"Payroll record added for {name}. Net Salary: {net_salary}")
+    print("Employee added successfully.")
+    print("Net Salary:", net)
 
+def view_payroll():
+    if not os.path.exists(filename):
+        print("No payroll records found.")
+        return
 
-def generate_payroll_report():
-  """Generates and prints a complete payroll report."""
-  initialize_payroll()
-  print("\n--- Company Payroll Report ---")
-  print(
-      f"{'ID':<6} | {'Name':<15} | {'Basic':<10} | {'Allow':<8} |"
-      f" {'Deduct':<8} | {'Net Salary':<10}"
-  )
-  print("-" * 65)
+    total = 0
 
-  total_payout = 0.0
-  with open(PAYROLL_FILE, mode="r") as f:
-    reader = csv.reader(f)
-    data = list(reader)
-    if len(data) <= 1:
-      print("No records available.")
-      return
+    with open(filename, "r") as f:
+        reader = csv.reader(f)
 
-    for row in data[1:]:
-      print(
-          f"{row[0]:<6} | {row[1]:<15} | {row[2]:<10} | {row[3]:<8} |"
-          f" {row[4]:<8} | {row[5]:<10}"
-      )
-      total_payout += float(row[5])
+        print("\n--- PAYROLL REPORT ---")
 
-  print("-" * 65)
-  print(f"Total Monthly Payout: {total_payout:.2f}")
+        for row in reader:
+            print(row)
+            if row[0] != "EmpID":
+                total += float(row[5])
 
+    print("Total Monthly Payout: ₹", total)
 
-if __name__ == "__main__":
-  initialize_payroll()
-  # Clear existing dummy records for test run clarity if needed
-  with open(PAYROLL_FILE, mode="w", newline="") as f:
-    writer = csv.writer(f)
-    writer.writerow(
-        ["EmpID", "Name", "BasicSalary", "Allowances", "Deductions", "NetSalary"]
-    )
-
-  add_employee("E001", "Alice Vance", 50000, 12000, 5000)
-  add_employee("E002", "David Miller", 65000, 15000, 7000)
-  add_employee("E003", "Emma Watson", 45000, 10000, 4000)
-  generate_payroll_report()
+while True:
+    print("\n1. Add Employee")
+    print("2. View Payroll")
+    print("3. Exit")
+    choice = input("Enter your choice: ")
+    if choice == "1":
+        add_employee()
+    elif choice == "2":
+        view_payroll()
+    elif choice == "3":
+        print("Exiting Payroll System...")
+        break
+    else:
+        print("Invalid choice.")

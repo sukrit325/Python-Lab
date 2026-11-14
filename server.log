@@ -1,0 +1,6 @@
+2026-06-01 10:00:15 INFO Server started successfully on port 8080
+2026-06-01 10:05:22 WARNING High memory usage detected: 85%
+2026-06-01 10:10:04 ERROR Database connection timeout
+2026-06-01 10:12:30 INFO User 'admin' logged in
+2026-06-01 10:15:45 ERROR Failed to write to cache directory
+2026-06-01 10:20:00 WARNING Disk space running low
